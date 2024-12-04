@@ -270,7 +270,7 @@ export function SidebarLeft({
                 {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
             </SidebarContent>
             <SidebarFooter>
-                <SignOut />
+                <SignOut sideNav />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
