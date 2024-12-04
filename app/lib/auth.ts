@@ -7,8 +7,13 @@ const dialect = new LibsqlDialect({
 })
  
 export const auth = betterAuth({
+    emailAndPassword: {  
+        enabled: true
+    },
+ 
   database: {
     dialect,
     type: "sqlite"
   }
+  
 });

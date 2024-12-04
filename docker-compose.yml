@@ -9,3 +9,5 @@ services:
       - TURSO_AUTH_TOKEN=dev
     volumes:
       - ./data:/app/data
+      - .:/app
+      - /app/node_modules
