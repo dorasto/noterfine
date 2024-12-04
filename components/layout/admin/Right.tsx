@@ -1,9 +1,7 @@
+"use client";
 import * as React from "react";
 import { Plus } from "lucide-react";
-
-// import { Calendars } from "@/components/calendars"
-// import { DatePicker } from "@/components/date-picker"
-// import { NavUser } from "@/components/nav-user"
+import { usePathname, useRouter } from "next/navigation";
 import {
     Sidebar,
     SidebarContent,
@@ -15,33 +13,13 @@ import {
     SidebarRail,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
-
-// This is sample data.
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
-    calendars: [
-        {
-            name: "My Calendars",
-            items: ["Personal", "Work", "Family"],
-        },
-        {
-            name: "Favorites",
-            items: ["Holidays", "Birthdays"],
-        },
-        {
-            name: "Other",
-            items: ["Travel", "Reminders", "Deadlines"],
-        },
-    ],
-};
+import { IconShieldFilled } from "@tabler/icons-react";
 
 export function SidebarRight({
     ...props
 }: React.ComponentProps<typeof Sidebar>) {
+    const pathname = usePathname();
+    const router = useRouter();
     return (
         <Sidebar
             collapsible="icon"
@@ -50,8 +28,13 @@ export function SidebarRight({
             side="right"
             {...props}
         >
-            <SidebarHeader className="h-16 border-b border-sidebar-border">
-                {/* <NavUser user={data.user} /> */}
+            <SidebarHeader className="border-b border-sidebar-border">
+                <SidebarMenuItem>
+                    <SidebarMenuButton isActive={pathname === "/admin/admin"}>
+                        <IconShieldFilled />
+                        Admin Dashboard
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
             </SidebarHeader>
             <SidebarContent>
                 {/* <DatePicker /> */}
