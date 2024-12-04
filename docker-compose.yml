@@ -1,0 +1,25 @@
+services:
+    # Define the service named 'app'
+    # app:
+    #     build:
+    #         context: .
+    #         dockerfile: Dockerfile
+    #     container_name: noterfine
+    #     ports:
+    #         - "3000:3000"
+    #     volumes:
+    #         - /app/node_modules
+    # Postgres
+    drizzle-db:
+        image: postgres
+        restart: always
+        container_name: drizzle-db
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: example
+            PGDATA: /data/postgres
+        volumes:
+            - postgres:/data/postgres
+volumes:
+    postgres:
