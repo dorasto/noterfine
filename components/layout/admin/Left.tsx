@@ -18,9 +18,11 @@ import {
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar";
+import SignOut from "@/components/auth/SignOut";
 
 // This is sample data.
 const data = {
@@ -267,6 +269,9 @@ export function SidebarLeft({
                 {/* <NavWorkspaces workspaces={data.workspaces} /> */}
                 {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
             </SidebarContent>
+            <SidebarFooter>
+                <SignOut />
+            </SidebarFooter>
             <SidebarRail />
         </Sidebar>
     );

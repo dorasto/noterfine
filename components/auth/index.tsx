@@ -1,6 +1,7 @@
 import { auth } from "@/app/lib/auth";
 import { headers } from "next/headers";
 import SignUp from "./SignUp";
+import SignIn from "./SignIn";
 
 export async function AuthenticationScreen() {
     const session = await auth.api.getSession({
@@ -8,8 +9,9 @@ export async function AuthenticationScreen() {
     });
     if (!session) {
         return (
-            <div>
+            <div className="flex items-center">
                 <SignUp />
+                <SignIn />
             </div>
         );
     }
