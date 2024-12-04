@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - TURSO_DATABASE_URL=file:/app/data/dev.db
+      - TURSO_AUTH_TOKEN=dev
+    volumes:
+      - ./data:/app/data
