@@ -3,8 +3,12 @@ import { authClient } from "@/app/lib/auth-client";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-
+import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 export default function SignIn() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -19,7 +23,7 @@ export default function SignIn() {
                     //show loading
                 },
                 onSuccess: (ctx) => {
-                    //redirect to the dashboard
+                    router.push("/admin");
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message);
@@ -30,6 +34,11 @@ export default function SignIn() {
 
     return (
         <div className="flex flex-col gap-4">
+            <Label variant={"headingLarge"}>Log in</Label>
+            <div className="flex flex-col gap-1">
+                <Label variant={"bold"}>Welcome back! 👋</Label>
+                <Label>Sign in with your preferred method below</Label>
+            </div>
             <Input
                 type="email"
                 value={email}
@@ -43,6 +52,13 @@ export default function SignIn() {
                 placeholder="Password"
             />
             <Button onClick={signIn}>Sign In</Button>
+            <Separator />
+            <Label variant={"small"}>
+                Don't have an account yet?{" "}
+                <Link className="text-primary" href={"/auth/signup"}>
+                    Create your account
+                </Link>
+            </Label>
         </div>
     );
 }

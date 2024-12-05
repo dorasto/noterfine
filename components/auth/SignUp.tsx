@@ -3,6 +3,9 @@ import { authClient } from "@/app/lib/auth-client"; //import the auth client
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
+import Link from "next/link";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
@@ -33,6 +36,12 @@ export default function SignUp() {
 
     return (
         <div className="flex flex-col gap-4">
+            <Label variant={"headingLarge"}>Get Started</Label>
+            <div className="flex flex-col gap-1">
+                <Label variant={"bold"}>
+                    Create your account and we'll take care of the rest
+                </Label>
+            </div>
             <Input
                 type="name"
                 value={name}
@@ -52,6 +61,13 @@ export default function SignUp() {
                 placeholder="email@email.com"
             />
             <Button onClick={signUp}>Sign Up</Button>
+            <Separator />
+            <Label variant={"small"}>
+                Already have an account?{" "}
+                <Link className="text-primary" href={"/auth/signin"}>
+                    Sign in
+                </Link>
+            </Label>
         </div>
     );
 }

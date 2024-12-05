@@ -29,12 +29,17 @@ export function SidebarRight({
             {...props}
         >
             <SidebarHeader className="border-b border-sidebar-border">
-                <SidebarMenuItem>
-                    <SidebarMenuButton isActive={pathname === "/admin/admin"}>
-                        <IconShieldFilled />
-                        Admin Dashboard
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            isActive={pathname === "/admin/site-admin"}
+                            onClick={() => router.push("/admin/site-admin")}
+                        >
+                            <IconShieldFilled />
+                            Site Admin
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
                 {/* <DatePicker /> */}

@@ -1,5 +1,6 @@
 import { SidebarLeft } from "@/components/layout/admin/Left";
 import { SidebarRight } from "@/components/layout/admin/Right";
+import { cookies } from "next/headers";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,16 +16,22 @@ import {
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
 export default async function DashboardLayout({
-    children, // will be a page or nested layout
+    children,
 }: {
     children: React.ReactNode;
 }) {
     const session = await auth.api.getSession({
         headers: await headers(), // you need to pass the headers object.
     });
+    const cookieStore = await cookies();
+    const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
     return (
-        <SidebarProvider>
-            <SidebarLeft />
+        <SidebarProvider defaultOpen={defaultOpen}>
+            <SidebarLeft
+                siteAdmin={session?.user.role === "admin"}
+                user={session?.user}
+            />
+
             <SidebarInset>
                 <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
                     <div className="flex flex-1 items-center gap-2 px-3">
@@ -46,7 +53,6 @@ export default async function DashboardLayout({
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
             </SidebarInset>
-            {session?.user.role === "admin" && <SidebarRight />}
         </SidebarProvider>
     );
 }

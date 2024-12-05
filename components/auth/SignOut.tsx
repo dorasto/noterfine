@@ -18,7 +18,7 @@ export default function SignOut({ sideNav }: Props) {
                     // handle loading state
                 },
                 onSuccess: () => {
-                    router.push("/login");
+                    router.push("/");
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message);
