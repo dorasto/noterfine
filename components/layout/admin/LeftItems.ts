@@ -10,6 +10,11 @@ export function LeftItemsArray() {
                     icon: tabler.IconHome,
                     href: "/admin",
                 },
+                {
+                    title: "Organizations",
+                    icon: tabler.IconBuildingCommunity,
+                    href: "/admin/organizations",
+                },
             ],
         },
     ];

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/app/db"; // your drizzle instance
 import * as schema from "@/app/db/schema/auth-schema";
-import { admin, magicLink } from "better-auth/plugins";
+import { admin, magicLink, organization } from "better-auth/plugins";
 import "dotenv/config";
 import { render } from "@react-email/render";
 import MagicLinkEmailTemplate from "@/components/email/MagicLink";
@@ -13,6 +13,7 @@ export const auth = betterAuth({
     },
     plugins: [
         admin(),
+        organization(),
         magicLink({
             sendMagicLink: async ({ email, token, url }) => {
                 const options = {
