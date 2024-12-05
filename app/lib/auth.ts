@@ -2,13 +2,46 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/app/db"; // your drizzle instance
 import * as schema from "@/app/db/schema/auth-schema";
-import { admin } from "better-auth/plugins";
+import { admin, magicLink } from "better-auth/plugins";
+import "dotenv/config";
 
 export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
-    plugins: [admin()],
+    plugins: [
+        admin(),
+        magicLink({
+            sendMagicLink: async ({ email, token, url }, request) => {
+                const options = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.UNSEND_API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        to: email,
+                        from: "Noterfine <hello@system.noterfine.app>",
+                        subject: "Noterfine - Sign In Link",
+                        html: `Click this link to sign in: <a href="${url}?token=${token}">Sign In</a>`,
+                        text: `Click this link to sign in: ${url}?token=${token}`,
+                    }),
+                };
+
+                try {
+                    const response = await fetch(
+                        "https://app.unsend.dev/api/v1/emails",
+                        options
+                    );
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error("Failed to send magic link:", error);
+                    throw error;
+                }
+            },
+        }),
+    ],
     database: drizzleAdapter(db, {
         provider: "pg",
         schema,

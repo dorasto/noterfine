@@ -7,6 +7,8 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import MagicLink from "./MagicLink";
+
 export default function SignIn() {
     const router = useRouter();
     const [email, setEmail] = useState("");
@@ -39,6 +41,9 @@ export default function SignIn() {
                 <Label variant={"bold"}>Welcome back! 👋</Label>
                 <Label>Sign in with your preferred method below</Label>
             </div>
+            <MagicLink />
+            <Separator className="my-6" />
+            {/* <Label variant={"heading"}>Or</Label> */}
             <Input
                 type="email"
                 value={email}
