@@ -30,6 +30,11 @@ export function SiteAdminItemsArray() {
                     icon: tabler.IconUsers,
                     href: "/admin/site-admin/users",
                 },
+                {
+                    title: "Email Templates",
+                    icon: tabler.IconMail,
+                    href: "/admin/site-admin/emails",
+                },
             ],
         },
     ];
