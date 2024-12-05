@@ -11,8 +11,12 @@ import {
     Button,
     Tailwind,
 } from "@react-email/components";
-
-const MagicLinkEmail = () => {
+interface MagicLinkEmailProps {
+    url?: string;
+}
+const MagicLinkEmailTemplate = ({
+    url = "https://noterfine.app",
+}: MagicLinkEmailProps) => {
     return (
         <Html>
             <Head />
@@ -36,7 +40,7 @@ const MagicLinkEmail = () => {
                             Click the button below to sign into your account.
                         </Text>
                         <Button
-                            href="https://www.jobaccepted.com/"
+                            href={url}
                             className="bg-brand text-background font-bold rounded-xl"
                             style={button}
                         >
@@ -58,7 +62,7 @@ const MagicLinkEmail = () => {
     );
 };
 
-export default MagicLinkEmail;
+export default MagicLinkEmailTemplate;
 
 const main = {
     backgroundColor: "#0c0a09",

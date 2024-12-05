@@ -4,7 +4,9 @@ import { db } from "@/app/db"; // your drizzle instance
 import * as schema from "@/app/db/schema/auth-schema";
 import { admin, magicLink } from "better-auth/plugins";
 import "dotenv/config";
-
+import { render } from "@react-email/render";
+import MagicLinkEmailTemplate from "@/components/email/MagicLink";
+import { sendMagicLinkEmail } from "./send-magic-link";
 export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
@@ -12,7 +14,7 @@ export const auth = betterAuth({
     plugins: [
         admin(),
         magicLink({
-            sendMagicLink: async ({ email, token, url }, request) => {
+            sendMagicLink: async ({ email, token, url }) => {
                 const options = {
                     method: "POST",
                     headers: {
@@ -34,7 +36,7 @@ export const auth = betterAuth({
                         options
                     );
                     const data = await response.json();
-                    return data;
+                    return;
                 } catch (error) {
                     console.error("Failed to send magic link:", error);
                     throw error;
