@@ -4,16 +4,34 @@ import { db } from "@/app/db"; // your drizzle instance
 import * as schema from "@/app/db/schema/auth-schema";
 import { admin, magicLink, organization } from "better-auth/plugins";
 import "dotenv/config";
-import { render } from "@react-email/render";
-import MagicLinkEmailTemplate from "@/components/email/MagicLink";
-import { sendMagicLinkEmail } from "./send-magic-link";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { eq } from "drizzle-orm";
+import { user } from "@/app/db/schema/auth-schema";
+
 export const auth = betterAuth({
+    user: {
+        additionalFields: {
+            accountType: {
+                type: "string",
+                required: false,
+                defaultValue: "free",
+                input: false, // don't allow user to set role
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
     },
     plugins: [
         admin(),
-        organization(),
+        organization({
+            allowUserToCreateOrganization: async (user) => {
+                const accountType = await getAccountType(user.id);
+                return accountType.plan === "pro";
+            },
+        }),
+
         magicLink({
             sendMagicLink: async ({ email, token, url }) => {
                 const options = {
@@ -50,3 +68,17 @@ export const auth = betterAuth({
         schema,
     }),
 });
+
+async function getAccountType(userId: string) {
+    const userRecord = await db
+        .select({
+            accountType: schema.user.accountType,
+        })
+        .from(schema.user)
+        .where(eq(schema.user.id, userId))
+        .limit(1);
+
+    return {
+        plan: userRecord[0]?.accountType || "free",
+    };
+}

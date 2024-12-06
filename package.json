@@ -7,9 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "db:studio": "pnpx drizzle-kit studio --config=drizzle.config.ts",
-        "db:push": "pnpx drizzle-kit push --config=drizzle.config.ts",
-        "db:up": "sudo docker-compose up --build -d"
+        "db:auth-generate": "npx @better-auth/cli generate --output ./app/db/schema/auth-schema.ts",
+        "db:push": "infisical run -- npx drizzle-kit push"
     },
     "dependencies": {
         "@better-fetch/fetch": "^1.1.12",
