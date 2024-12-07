@@ -8,7 +8,7 @@ import {
     LogOut,
     Sparkles,
 } from "lucide-react";
-import { type User } from "@/types/user";
+import { FullOrganization, type User } from "@/types/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,7 @@ import {
     IconUser,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 interface Props {
     user: User;
     state?: "collapsed" | "expanded";
@@ -59,6 +60,40 @@ export function OrgNav({ user, state }: Props) {
             },
         });
     };
+
+    const { data: session } = authClient.useSession();
+    const { data: organizations } = authClient.useListOrganizations();
+    const [fullOrganizations, setFullOrganizations] = useState<
+        FullOrganization[]
+    >([]);
+
+    useEffect(() => {
+        async function fetchFullOrgs() {
+            if (!organizations) return;
+
+            try {
+                const fullOrgs = await Promise.all(
+                    organizations.map(async (org) => {
+                        const result =
+                            await authClient.organization.getFullOrganization({
+                                query: { organizationId: org.id },
+                            });
+                        return result.data as FullOrganization; // Type assertion here
+                    })
+                );
+                // Filter out any null values and set state
+                setFullOrganizations(
+                    fullOrgs.filter(
+                        (org): org is FullOrganization => org != null
+                    )
+                );
+            } catch (error) {
+                console.error("Error fetching full org data:", error);
+            }
+        }
+
+        fetchFullOrgs();
+    }, [organizations]);
 
     return (
         <SidebarMenuItem>
@@ -123,31 +158,23 @@ export function OrgNav({ user, state }: Props) {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                            <IconSparkles />
-                            Upgrade to Pro
-                        </DropdownMenuItem>
+                        {fullOrganizations.map((org) => (
+                            <DropdownMenuItem
+                                key={org.id}
+                                // onClick={() => {
+                                //     setSelectedOrganization(org);
+                                //     setIsOpen(false);
+                                // }}
+                            >
+                                <img
+                                    src={org.logo ?? ""}
+                                    alt={org.name}
+                                    className="h-4 w-4"
+                                />
+                                {org.name}
+                            </DropdownMenuItem>
+                        ))}
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                        <DropdownMenuItem>
-                            <IconUser />
-                            Account
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <IconCreditCard />
-                            Billing
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <IconBell />
-                            Notifications
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
-                        <IconLogout />
-                        Log out
-                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>
