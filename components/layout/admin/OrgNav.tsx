@@ -30,7 +30,10 @@ import {
 import { authClient } from "@/app/lib/auth-client";
 import {
     IconBell,
+    IconBuildingCommunity,
     IconCreditCard,
+    IconHome,
+    IconLayoutSidebarRightExpandFilled,
     IconLogout,
     IconSparkles,
     IconUser,
@@ -66,7 +69,19 @@ export function OrgNav({ user, state }: Props) {
     const [fullOrganizations, setFullOrganizations] = useState<
         FullOrganization[]
     >([]);
-
+    const [activeOrg, setActiveOrg] = useState<FullOrganization | null>(null);
+    // Add this useEffect to get the active organization
+    useEffect(() => {
+        if (
+            session?.session.activeOrganizationId &&
+            fullOrganizations.length > 0
+        ) {
+            const active = fullOrganizations.find(
+                (org) => org.id === session.session.activeOrganizationId
+            );
+            setActiveOrg(active || null);
+        }
+    }, [session?.session.activeOrganizationId, fullOrganizations]);
     useEffect(() => {
         async function fetchFullOrgs() {
             if (!organizations) return;
@@ -100,31 +115,23 @@ export function OrgNav({ user, state }: Props) {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuButton
-                        size={state === "expanded" ? "lg" : "default"}
                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-sidebar-accent border-sidebar-border"
                         tooltip={"Your account"}
                     >
-                        <Avatar
-                            className={cn(
-                                "rounded-md",
-                                state === "expanded" ? "w-8 h-8" : "w-4 h-4"
-                            )}
-                        >
+                        <Avatar className={cn("rounded-md w-4 h-4")}>
                             <AvatarImage
-                                src={
-                                    "https://cdn.doras.to/Noterfine/logo-white.svg"
-                                }
-                                alt="Noterfine"
+                                src={activeOrg?.logo || ""}
+                                alt={activeOrg?.name || "Noterfine"}
                             />
                             <AvatarFallback className="rounded-md">
-                                {user.name?.charAt(0) || "U"}
+                                <IconBuildingCommunity />
                             </AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">
-                                OrgName
+                                {activeOrg?.name || "Organization"}
                             </span>
-                            <span className="truncate text-xs">Pro</span>
+                            {/* <span className="truncate text-xs">Pro</span> */}
                         </div>
                         <ChevronsUpDown className="ml-auto size-4" />
                     </SidebarMenuButton>
@@ -161,10 +168,22 @@ export function OrgNav({ user, state }: Props) {
                         {fullOrganizations.map((org) => (
                             <DropdownMenuItem
                                 key={org.id}
-                                // onClick={() => {
-                                //     setSelectedOrganization(org);
-                                //     setIsOpen(false);
-                                // }}
+                                onClick={async () => {
+                                    try {
+                                        await authClient.organization.setActive(
+                                            {
+                                                organizationId: org.id,
+                                            }
+                                        );
+                                        setActiveOrg(org);
+                                        router.push(`/admin/org/${org.id}`);
+                                    } catch (error) {
+                                        console.error(
+                                            "Error setting active organization:",
+                                            error
+                                        );
+                                    }
+                                }}
                             >
                                 <img
                                     src={org.logo ?? ""}
@@ -174,6 +193,26 @@ export function OrgNav({ user, state }: Props) {
                                 {org.name}
                             </DropdownMenuItem>
                         ))}
+
+                        <DropdownMenuItem
+                            onClick={async () => {
+                                try {
+                                    await authClient.organization.setActive({
+                                        organizationId: null,
+                                    });
+                                    setActiveOrg(null);
+                                    router.push(`/admin`);
+                                } catch (error) {
+                                    console.error(
+                                        "Error clearing active organization:",
+                                        error
+                                    );
+                                }
+                            }}
+                        >
+                            <IconHome className="h-4 w-4" />
+                            Home
+                        </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
