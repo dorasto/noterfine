@@ -36,7 +36,12 @@ import {
     IconUser,
 } from "@tabler/icons-react";
 
-export function UserNav({ user }: { user: User }) {
+interface Props {
+    user: User;
+    state?: "collapsed" | "expanded";
+}
+
+export function UserNav({ user, state }: Props) {
     const { isMobile } = useSidebar();
     const router = useRouter();
     const handleSignOut = async () => {
