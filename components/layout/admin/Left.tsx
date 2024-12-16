@@ -7,6 +7,7 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
+    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarHeader,
@@ -16,6 +17,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
+    SidebarMenuSubButton,
     SidebarMenuSubItem,
     SidebarRail,
     SidebarSeparator,
@@ -37,6 +39,7 @@ import {
     IconDotsVertical,
     IconLayoutSidebarLeftCollapse,
     IconLayoutSidebarLeftExpand,
+    IconNews,
     IconPencil,
     IconPlus,
     IconShieldFilled,
@@ -233,49 +236,45 @@ export function SidebarLeft({
                                 </SidebarMenu>
                             </SidebarGroup>
                         ))}
-                        <SidebarGroup>
-                            <Collapsible
-                                defaultOpen
-                                className="group/collapsible"
-                            >
-                                <SidebarMenuItem>
-                                    <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton>
-                                            Collections
+                        <Collapsible defaultOpen className="group/collapsible">
+                            <SidebarGroup>
+                                <SidebarGroupLabel>
+                                    <IconNews />
+                                    Collections
+                                </SidebarGroupLabel>
+                                <SidebarGroupAction
+                                    onClick={() =>
+                                        setCreateCollectionOpen(true)
+                                    }
+                                >
+                                    <IconPlus />
+                                </SidebarGroupAction>
+                                {collections?.map((collection) => (
+                                    <SidebarMenuItem key={collection.id}>
+                                        <SidebarMenuButton
+                                            isActive={pathname.includes(
+                                                collection.id
+                                            )}
+                                            onClick={() =>
+                                                router.push(
+                                                    `/admin/org/${activeOrg?.id}/collections/${collection.id}`
+                                                )
+                                            }
+                                        >
+                                            {collection.name}
                                         </SidebarMenuButton>
-                                    </CollapsibleTrigger>
-                                    <SidebarMenuAction
-                                        onClick={() =>
-                                            setCreateCollectionOpen(true)
-                                        }
-                                    >
-                                        <IconPlus />
-                                    </SidebarMenuAction>
-                                    <CollapsibleContent>
                                         <SidebarMenuSub>
-                                            {collections?.map((collection) => (
-                                                <SidebarMenuSubItem
-                                                    key={collection.id}
-                                                >
-                                                    <SidebarMenuButton
-                                                        isActive={pathname.includes(
-                                                            collection.id
-                                                        )}
-                                                        onClick={() =>
-                                                            router.push(
-                                                                `/admin/org/${activeOrg?.id}/collections/${collection.id}`
-                                                            )
-                                                        }
-                                                    >
-                                                        {collection.name}
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuSubItem>
-                                            ))}
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton />
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton />
+                                            </SidebarMenuSubItem>
                                         </SidebarMenuSub>
-                                    </CollapsibleContent>
-                                </SidebarMenuItem>
-                            </Collapsible>
-                        </SidebarGroup>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarGroup>
+                        </Collapsible>
                     </>
                 </SidebarContent>
             )}
