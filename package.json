@@ -13,6 +13,9 @@
     },
     "dependencies": {
         "@better-fetch/fetch": "^1.1.12",
+        "@blocknote/core": "^0.21.0",
+        "@blocknote/mantine": "^0.21.0",
+        "@blocknote/react": "^0.21.0",
         "@hookform/resolvers": "^3.9.1",
         "@radix-ui/react-accordion": "^1.2.1",
         "@radix-ui/react-alert-dialog": "^1.1.2",

@@ -132,7 +132,7 @@ export function SidebarLeft({
     }, [activeOrg]);
 
     return (
-        <Sidebar className="" variant="floating" collapsible="icon" {...props}>
+        <Sidebar className="" variant="inset" collapsible="icon" {...props}>
             <CreateCollection
                 user={user}
                 organization={activeOrg}
