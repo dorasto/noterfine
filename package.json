@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "concurrently \"infisical run -- pnpm next dev\" \"infisical run -- pnpm drizzle-kit studio\"",
+        "drizzle": "infisical run -- pnpm drizzle-kit studio",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",

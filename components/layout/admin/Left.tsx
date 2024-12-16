@@ -23,7 +23,11 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { UserNav } from "./UserNav";
 import { type User } from "@/types/user";
-import { LeftItemsArray, SiteAdminItemsArray } from "./LeftItems";
+import {
+    FooterItemsArray,
+    LeftItemsArray,
+    SiteAdminItemsArray,
+} from "./LeftItems";
 import {
     IconArrowBack,
     IconLayoutSidebarLeftCollapse,
@@ -150,6 +154,22 @@ export function SidebarLeft({
             )}
             <SidebarFooter>
                 <SidebarMenu>
+                    {FooterItemsArray().map((group) => (
+                        <div key={group.title}>
+                            {group.items.map((item) => (
+                                <SidebarMenuItem key={item.title}>
+                                    <SidebarMenuButton
+                                        onClick={() => router.push(item.href)}
+                                        isActive={pathname === item.href}
+                                        tooltip={item.title}
+                                    >
+                                        <item.icon />
+                                        {item.title}
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </div>
+                    ))}
                     <UserNav user={user} />
                     {siteAdmin && (
                         <>

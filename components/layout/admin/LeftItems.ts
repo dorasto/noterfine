@@ -10,6 +10,15 @@ export function LeftItemsArray() {
                     icon: tabler.IconHome,
                     href: "/admin",
                 },
+            ],
+        },
+    ];
+}
+export function FooterItemsArray() {
+    return [
+        {
+            title: "Dashboard",
+            items: [
                 {
                     title: "Organizations",
                     icon: tabler.IconBuildingCommunity,

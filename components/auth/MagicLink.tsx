@@ -14,8 +14,8 @@ export default function MagicLink() {
     const sendMagicLink = async () => {
         const { data, error } = await authClient.signIn.magicLink(
             {
-                email,
                 callbackURL: "/admin",
+                email,
             },
             {
                 onRequest: (ctx) => {
@@ -23,7 +23,6 @@ export default function MagicLink() {
                 },
                 onSuccess: (ctx) => {
                     setIsSent(true);
-                    router.push("/admin");
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message);

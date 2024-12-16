@@ -11,7 +11,7 @@ import {
 import { FullOrganization, type User } from "@/types/user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -48,21 +48,7 @@ interface Props {
 export function OrgNav({ user, state }: Props) {
     const { isMobile } = useSidebar();
     const router = useRouter();
-    const handleSignOut = async () => {
-        await authClient.signOut({
-            fetchOptions: {
-                onRequest: (ctx) => {
-                    // handle loading state
-                },
-                onSuccess: () => {
-                    router.push("/");
-                },
-                onError: (ctx) => {
-                    alert(ctx.error.message);
-                },
-            },
-        });
-    };
+    const path = usePathname();
 
     const { data: session } = authClient.useSession();
     const { data: organizations } = authClient.useListOrganizations();
@@ -109,7 +95,6 @@ export function OrgNav({ user, state }: Props) {
 
         fetchFullOrgs();
     }, [organizations]);
-
     return (
         <SidebarMenuItem>
             <DropdownMenu>

@@ -8,6 +8,10 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { eq } from "drizzle-orm";
 import { user } from "@/app/db/schema/auth-schema";
+import { render } from "@react-email/render";
+import React from "react";
+import { MagicLinkEmailTemplate } from "@/components/email/MagicLink";
+import { sendMagicLinkEmail } from "./sendMagic";
 
 export const auth = betterAuth({
     user: {
@@ -33,29 +37,10 @@ export const auth = betterAuth({
         }),
 
         magicLink({
+            disableSignUp: true,
             sendMagicLink: async ({ email, token, url }) => {
-                const options = {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.UNSEND_API_KEY}`,
-                    },
-                    body: JSON.stringify({
-                        to: email,
-                        from: "Noterfine <hello@system.noterfine.app>",
-                        subject: "Noterfine - Sign In Link",
-                        html: `Click this link to sign in: <a href="${url}?token=${token}">Sign In</a>`,
-                        text: `Click this link to sign in: ${url}?token=${token}`,
-                    }),
-                };
-
                 try {
-                    const response = await fetch(
-                        "https://app.unsend.dev/api/v1/emails",
-                        options
-                    );
-                    const data = await response.json();
-                    return;
+                    await sendMagicLinkEmail(email, url, token);
                 } catch (error) {
                     console.error("Failed to send magic link:", error);
                     throw error;

@@ -11,12 +11,8 @@ import {
     Button,
     Tailwind,
 } from "@react-email/components";
-interface MagicLinkEmailProps {
-    url?: string;
-}
-const MagicLinkEmailTemplate = ({
-    url = "https://noterfine.app",
-}: MagicLinkEmailProps) => {
+export function MagicLinkEmailTemplate(props) {
+    const { url } = props;
     return (
         <Html>
             <Head />
@@ -60,9 +56,7 @@ const MagicLinkEmailTemplate = ({
             </Tailwind>
         </Html>
     );
-};
-
-export default MagicLinkEmailTemplate;
+}
 
 const main = {
     backgroundColor: "#0c0a09",
