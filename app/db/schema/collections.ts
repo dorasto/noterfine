@@ -5,6 +5,7 @@ export const collection = pgTable("collection", {
     id: text("id").primaryKey(),
     name: text("name").notNull(),
     description: text("description"),
+    isDomain: boolean("isDomain").default(false).notNull(),
     url: text("url"),
     isPublic: boolean("isPublic").default(false).notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),

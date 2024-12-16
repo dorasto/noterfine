@@ -12,6 +12,7 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuAction,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
@@ -33,8 +34,10 @@ import {
 } from "./LeftItems";
 import {
     IconArrowBack,
+    IconDotsVertical,
     IconLayoutSidebarLeftCollapse,
     IconLayoutSidebarLeftExpand,
+    IconPencil,
     IconPlus,
     IconShieldFilled,
 } from "@tabler/icons-react";
@@ -255,9 +258,12 @@ export function SidebarLeft({
                                                     key={collection.id}
                                                 >
                                                     <SidebarMenuButton
+                                                        isActive={pathname.includes(
+                                                            collection.id
+                                                        )}
                                                         onClick={() =>
                                                             router.push(
-                                                                `/collections/${collection.id}`
+                                                                `/admin/org/${activeOrg?.id}/collections/${collection.id}`
                                                             )
                                                         }
                                                     >

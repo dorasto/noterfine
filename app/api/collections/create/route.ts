@@ -20,6 +20,7 @@ export async function POST(req: Request) {
                 id: body.id,
                 name: body.name,
                 description: body.description,
+                isDomain: body.isDomain,
                 url: body.url,
                 isPublic: body.isPublic,
                 userId: body.userId,

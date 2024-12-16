@@ -76,6 +76,7 @@ export default function CreateCollection({
                 id: crypto.randomUUID(),
                 name: values.collectionName,
                 description: values.collectionBio,
+                domain: values.collectionDomain,
                 url: values.collectionDomain,
                 isPublic: values.collectionPublic,
                 userId: user.id,
