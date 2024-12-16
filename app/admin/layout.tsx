@@ -18,6 +18,7 @@ import {
 import { auth } from "../lib/auth";
 import { headers } from "next/headers";
 import { User } from "@/types/user";
+import { Suspense } from "react";
 export default async function DashboardLayout({
     children,
 }: {
@@ -33,13 +34,19 @@ export default async function DashboardLayout({
     const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
     return (
         <SidebarProvider defaultOpen={defaultOpen}>
-            <SidebarLeft
-                siteAdmin={session?.user.role === "admin"}
-                user={session.user as User}
-            />
+            <Suspense fallback={<div>Loading...</div>}>
+                <SidebarLeft
+                    siteAdmin={session?.user.role === "admin"}
+                    user={session.user as User}
+                />
+            </Suspense>
 
             <SidebarInset>
-                <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <div className="flex flex-1 flex-col gap-4 p-4">
+                        {children}
+                    </div>
+                </Suspense>
             </SidebarInset>
         </SidebarProvider>
     );

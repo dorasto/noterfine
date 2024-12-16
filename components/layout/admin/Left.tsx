@@ -14,6 +14,8 @@ import {
     SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
@@ -22,7 +24,8 @@ import {
 
 import { usePathname, useRouter } from "next/navigation";
 import { UserNav } from "./UserNav";
-import { type User } from "@/types/user";
+import { FullOrganization, Collection, type User } from "@/types/user";
+
 import {
     FooterItemsArray,
     LeftItemsArray,
@@ -32,11 +35,19 @@ import {
     IconArrowBack,
     IconLayoutSidebarLeftCollapse,
     IconLayoutSidebarLeftExpand,
+    IconPlus,
     IconShieldFilled,
 } from "@tabler/icons-react";
 import { OrgNav } from "./OrgNav";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import CreateCollection from "@/components/collections/CreateCollection";
+import { authClient } from "@/app/lib/auth-client";
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function SidebarLeft({
     user,
@@ -58,8 +69,74 @@ export function SidebarLeft({
         toggleSidebar,
     } = useSidebar();
 
+    const [createCollectionopen, setCreateCollectionOpen] =
+        React.useState(false);
+    const { data: session } = authClient.useSession();
+    const { data: organizations } = authClient.useListOrganizations();
+    const [fullOrganizations, setFullOrganizations] = React.useState<
+        FullOrganization[]
+    >([]);
+    const [activeOrg, setActiveOrg] = React.useState<FullOrganization | null>(
+        null
+    );
+
+    React.useEffect(() => {
+        async function fetchFullOrgs() {
+            if (!organizations) return;
+
+            const fullOrgs = await Promise.all(
+                organizations.map(async (org) => {
+                    const result =
+                        await authClient.organization.getFullOrganization({
+                            query: { organizationId: org.id },
+                        });
+                    return result.data as FullOrganization;
+                })
+            );
+            setFullOrganizations(
+                fullOrgs.filter((org): org is FullOrganization => org != null)
+            );
+        }
+        fetchFullOrgs();
+    }, [organizations]);
+
+    React.useEffect(() => {
+        if (
+            session?.session.activeOrganizationId &&
+            fullOrganizations.length > 0
+        ) {
+            const active = fullOrganizations.find(
+                (org) => org.id === session.session.activeOrganizationId
+            );
+            setActiveOrg(active || null);
+        }
+    }, [session?.session.activeOrganizationId, fullOrganizations]);
+
+    const [collections, setCollections] = React.useState<Collection[]>([]);
+
+    React.useEffect(() => {
+        async function fetchCollections() {
+            if (activeOrg) {
+                const response = await fetch(
+                    `/api/collections/list?organizationId=${activeOrg.id}`
+                );
+
+                const data = await response.json();
+                setCollections(data);
+            }
+        }
+        fetchCollections();
+    }, [activeOrg]);
+
     return (
         <Sidebar className="" variant="floating" collapsible="icon" {...props}>
+            <CreateCollection
+                user={user}
+                organization={activeOrg}
+                onOrganizationChange={setActiveOrg}
+                open={createCollectionopen}
+                onOpenChange={setCreateCollectionOpen}
+            />
             <SidebarHeader>
                 <SidebarMenu>
                     {state === "expanded" ? (
@@ -130,26 +207,70 @@ export function SidebarLeft({
                 </SidebarContent>
             ) : (
                 <SidebarContent>
-                    {LeftItemsArray().map((group) => (
-                        <SidebarGroup key={group.title}>
-                            <SidebarMenu>
-                                {group.items.map((item) => (
-                                    <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton
-                                            onClick={() =>
-                                                router.push(item.href)
-                                            }
-                                            isActive={pathname === item.href}
-                                            tooltip={item.title}
-                                        >
-                                            <item.icon />
-                                            {item.title}
+                    <>
+                        {LeftItemsArray().map((group) => (
+                            <SidebarGroup key={group.title}>
+                                <SidebarMenu>
+                                    {group.items.map((item) => (
+                                        <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuButton
+                                                onClick={() =>
+                                                    router.push(item.href)
+                                                }
+                                                isActive={
+                                                    pathname === item.href
+                                                }
+                                                tooltip={item.title}
+                                            >
+                                                <item.icon />
+                                                {item.title}
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    ))}
+                                </SidebarMenu>
+                            </SidebarGroup>
+                        ))}
+                        <SidebarGroup>
+                            <Collapsible
+                                defaultOpen
+                                className="group/collapsible"
+                            >
+                                <SidebarMenuItem>
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton>
+                                            Collections
                                         </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
-                            </SidebarMenu>
+                                    </CollapsibleTrigger>
+                                    <SidebarMenuAction
+                                        onClick={() =>
+                                            setCreateCollectionOpen(true)
+                                        }
+                                    >
+                                        <IconPlus />
+                                    </SidebarMenuAction>
+                                    <CollapsibleContent>
+                                        <SidebarMenuSub>
+                                            {collections?.map((collection) => (
+                                                <SidebarMenuSubItem
+                                                    key={collection.id}
+                                                >
+                                                    <SidebarMenuButton
+                                                        onClick={() =>
+                                                            router.push(
+                                                                `/collections/${collection.id}`
+                                                            )
+                                                        }
+                                                    >
+                                                        {collection.name}
+                                                    </SidebarMenuButton>
+                                                </SidebarMenuSubItem>
+                                            ))}
+                                        </SidebarMenuSub>
+                                    </CollapsibleContent>
+                                </SidebarMenuItem>
+                            </Collapsible>
                         </SidebarGroup>
-                    ))}
+                    </>
                 </SidebarContent>
             )}
             <SidebarFooter>

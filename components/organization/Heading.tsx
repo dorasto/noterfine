@@ -10,7 +10,6 @@ interface Props {
 }
 export function OrgHeading({ children }: Props) {
     const { data: activeOrganization } = authClient.useActiveOrganization();
-    console.log(activeOrganization);
     return (
         <Card>
             <CardHeader>
