@@ -15,8 +15,6 @@ export async function updateActiveOrganization(org: FullOrganization | null) {
             organizationId: org?.id || null,
         },
     });
-
-    revalidatePath("/", "layout");
 }
 
 export async function getCollections(organizationId: string) {

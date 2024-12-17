@@ -40,6 +40,7 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { revalidatePath } from "next/cache";
 interface Props {
     user: User;
     state?: "collapsed" | "expanded";
@@ -122,9 +123,9 @@ export function OrgNav({
                             <DropdownMenuItem
                                 key={org.id}
                                 onClick={async () => {
-                                    router.push(`/admin/org/${org.id}`);
                                     await onOrganizationChange(org);
                                     router.refresh();
+                                    router.push(`/admin/org/${org.id}`);
                                 }}
                             >
                                 <img
