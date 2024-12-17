@@ -50,6 +50,15 @@ export default async function DashboardLayout({
         ) || null;
 
     const collections = activeOrg ? await getCollections(activeOrg.id) : [];
+    const allOrgCollections = await Promise.all(
+        fullOrganizations.map(async (org) => {
+            const orgCollections = await getCollections(org.id);
+            return {
+                orgId: org.id,
+                collections: orgCollections,
+            };
+        })
+    );
 
     const cookieStore = await cookies();
     const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
@@ -63,6 +72,7 @@ export default async function DashboardLayout({
                     organizations={fullOrganizations}
                     activeOrg={activeOrg}
                     collections={collections}
+                    allOrgCollections={allOrgCollections}
                     onOrganizationChange={updateActiveOrganization}
                 />
             </Suspense>

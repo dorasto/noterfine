@@ -64,6 +64,8 @@ interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
     organizations: FullOrganization[];
     activeOrg: FullOrganization | null;
     collections: Collection[];
+    allOrgCollections: { orgId: string; collections: Collection[] }[];
+
     onOrganizationChange: (org: FullOrganization | null) => Promise<void>;
 }
 
@@ -191,80 +193,93 @@ export function SidebarLeft({
                                 </SidebarMenu>
                             </SidebarGroup>
                         ))}
-                        <Collapsible defaultOpen className="group/collapsible">
-                            <SidebarGroup>
-                                <SidebarGroupLabel>
-                                    <IconBuildingCommunity />
-                                    Organizations
-                                </SidebarGroupLabel>
-                                <SidebarGroupAction
-                                    onClick={() =>
-                                        setCreateCollectionOpen(true)
-                                    }
+                        <SidebarGroup>
+                            <SidebarGroupLabel>
+                                <IconBuildingCommunity />
+                                Organizations
+                            </SidebarGroupLabel>
+                            <SidebarGroupAction
+                                onClick={() => setCreateCollectionOpen(true)}
+                            >
+                                <IconPlus />
+                            </SidebarGroupAction>
+                            {organizations?.map((org) => (
+                                <Collapsible
+                                    defaultOpen
+                                    // open={pathname.includes(org.id)}
+
+                                    key={org.id}
+                                    className="group/collapsible"
                                 >
-                                    <IconPlus />
-                                </SidebarGroupAction>
-                                {organizations?.map((org) => (
-                                    <Collapsible
-                                        defaultOpen
-                                        key={org.id}
-                                        className="group/collapsible"
-                                    >
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton
-                                                isActive={pathname.includes(
-                                                    org.id
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton
+                                            isActive={pathname.includes(org.id)}
+                                            onClick={async () => {
+                                                await onOrganizationChange(org);
+                                                router.refresh();
+                                                router.push(
+                                                    `/admin/org/${org.id}`
+                                                );
+                                            }}
+                                        >
+                                            <Avatar
+                                                className={cn(
+                                                    "rounded-md w-4 h-4"
                                                 )}
-                                                onClick={async () => {
-                                                    await onOrganizationChange(
-                                                        org
-                                                    );
-                                                    router.refresh();
-                                                    router.push(
-                                                        `/admin/org/${org.id}`
-                                                    );
-                                                }}
                                             >
-                                                <Avatar
-                                                    className={cn(
-                                                        "rounded-md w-4 h-4"
-                                                    )}
-                                                >
-                                                    {org.logo && (
-                                                        <AvatarImage
-                                                            src={org.logo}
-                                                            alt={
-                                                                org?.name ||
-                                                                "Noterfine"
-                                                            }
-                                                        />
-                                                    )}
-                                                    <AvatarFallback className="rounded-md">
-                                                        {org.name?.charAt(0)}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                {org.name}
-                                            </SidebarMenuButton>
+                                                {org.logo && (
+                                                    <AvatarImage
+                                                        src={org.logo}
+                                                        alt={
+                                                            org?.name ||
+                                                            "Noterfine"
+                                                        }
+                                                    />
+                                                )}
+                                                <AvatarFallback className="rounded-md">
+                                                    {org.name?.charAt(0)}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            {org.name}
+                                        </SidebarMenuButton>
+                                        <SidebarMenuAction>
                                             <CollapsibleTrigger asChild>
-                                                <SidebarMenuAction>
-                                                    <IconChevronDown className="group-data-[state=open]/collapsible:rotate-90" />
-                                                </SidebarMenuAction>
+                                                <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
                                             </CollapsibleTrigger>
-                                            <CollapsibleContent>
-                                                <SidebarMenuSub>
-                                                    <SidebarMenuSubItem>
-                                                        <SidebarMenuSubButton />
-                                                    </SidebarMenuSubItem>
-                                                    <SidebarMenuSubItem>
-                                                        <SidebarMenuSubButton />
-                                                    </SidebarMenuSubItem>
-                                                </SidebarMenuSub>
-                                            </CollapsibleContent>
-                                        </SidebarMenuItem>
-                                    </Collapsible>
-                                ))}
-                            </SidebarGroup>
-                        </Collapsible>
+                                        </SidebarMenuAction>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                {collections.map(
+                                                    (collection) => (
+                                                        <SidebarMenuSubItem
+                                                            key={collection.id}
+                                                        >
+                                                            <SidebarMenuSubButton
+                                                                onClick={() =>
+                                                                    router.push(
+                                                                        `/admin/org/${org.id}/collection/${collection.id}`
+                                                                    )
+                                                                }
+                                                            >
+                                                                {
+                                                                    collection.name
+                                                                }
+                                                            </SidebarMenuSubButton>
+                                                        </SidebarMenuSubItem>
+                                                    )
+                                                )}
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton />
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton />
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </SidebarMenuItem>
+                                </Collapsible>
+                            ))}
+                        </SidebarGroup>
                         <Collapsible defaultOpen className="group/collapsible">
                             <SidebarGroup>
                                 <SidebarGroupLabel>
