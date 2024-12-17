@@ -55,91 +55,37 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
+    user: User;
+    siteAdmin: boolean;
+    organizations: FullOrganization[];
+    activeOrg: FullOrganization | null;
+    collections: Collection[];
+    onOrganizationChange: (org: FullOrganization | null) => Promise<void>;
+}
+
 export function SidebarLeft({
     user,
     siteAdmin,
+    organizations,
+    activeOrg,
+    collections,
+    onOrganizationChange,
     ...props
-}: React.ComponentProps<typeof Sidebar> & {
-    user: User;
-    siteAdmin: boolean;
-}) {
+}: SidebarLeftProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const {
-        state,
-        open,
-        setOpen,
-        openMobile,
-        setOpenMobile,
-        isMobile,
-        toggleSidebar,
-    } = useSidebar();
+    const { state, toggleSidebar } = useSidebar();
 
     const [createCollectionopen, setCreateCollectionOpen] =
         React.useState(false);
-    const { data: session } = authClient.useSession();
-    const { data: organizations } = authClient.useListOrganizations();
-    const [fullOrganizations, setFullOrganizations] = React.useState<
-        FullOrganization[]
-    >([]);
-    const [activeOrg, setActiveOrg] = React.useState<FullOrganization | null>(
-        null
-    );
-
-    React.useEffect(() => {
-        async function fetchFullOrgs() {
-            if (!organizations) return;
-
-            const fullOrgs = await Promise.all(
-                organizations.map(async (org) => {
-                    const result =
-                        await authClient.organization.getFullOrganization({
-                            query: { organizationId: org.id },
-                        });
-                    return result.data as FullOrganization;
-                })
-            );
-            setFullOrganizations(
-                fullOrgs.filter((org): org is FullOrganization => org != null)
-            );
-        }
-        fetchFullOrgs();
-    }, [organizations]);
-
-    React.useEffect(() => {
-        if (
-            session?.session.activeOrganizationId &&
-            fullOrganizations.length > 0
-        ) {
-            const active = fullOrganizations.find(
-                (org) => org.id === session.session.activeOrganizationId
-            );
-            setActiveOrg(active || null);
-        }
-    }, [session?.session.activeOrganizationId, fullOrganizations]);
-
-    const [collections, setCollections] = React.useState<Collection[]>([]);
-
-    React.useEffect(() => {
-        async function fetchCollections() {
-            if (activeOrg) {
-                const response = await fetch(
-                    `/api/collections/list?organizationId=${activeOrg.id}`
-                );
-
-                const data = await response.json();
-                setCollections(data);
-            }
-        }
-        fetchCollections();
-    }, [activeOrg]);
 
     return (
         <Sidebar className="" variant="inset" collapsible="icon" {...props}>
             <CreateCollection
                 user={user}
                 organization={activeOrg}
-                onOrganizationChange={setActiveOrg}
+                onOrganizationChange={onOrganizationChange}
                 open={createCollectionopen}
                 onOpenChange={setCreateCollectionOpen}
             />
@@ -184,7 +130,13 @@ export function SidebarLeft({
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
-                    <OrgNav user={user} state={state} />
+                    <OrgNav
+                        user={user}
+                        state={state}
+                        organizations={organizations}
+                        activeOrg={activeOrg}
+                        onOrganizationChange={onOrganizationChange}
+                    />
                 </SidebarMenu>
             </SidebarHeader>
             {siteAdmin && pathname.includes("/admin/site-admin") ? (

@@ -43,58 +43,20 @@ import { useEffect, useState } from "react";
 interface Props {
     user: User;
     state?: "collapsed" | "expanded";
+    organizations: FullOrganization[];
+    activeOrg: FullOrganization | null;
+    onOrganizationChange: (org: FullOrganization | null) => Promise<void>;
 }
 
-export function OrgNav({ user, state }: Props) {
+export function OrgNav({
+    user,
+    state,
+    organizations,
+    activeOrg,
+    onOrganizationChange,
+}: Props) {
     const { isMobile } = useSidebar();
     const router = useRouter();
-    const path = usePathname();
-
-    const { data: session } = authClient.useSession();
-    const { data: organizations } = authClient.useListOrganizations();
-    const [fullOrganizations, setFullOrganizations] = useState<
-        FullOrganization[]
-    >([]);
-    const [activeOrg, setActiveOrg] = useState<FullOrganization | null>(null);
-    // Add this useEffect to get the active organization
-    useEffect(() => {
-        if (
-            session?.session.activeOrganizationId &&
-            fullOrganizations.length > 0
-        ) {
-            const active = fullOrganizations.find(
-                (org) => org.id === session.session.activeOrganizationId
-            );
-            setActiveOrg(active || null);
-        }
-    }, [session?.session.activeOrganizationId, fullOrganizations]);
-    useEffect(() => {
-        async function fetchFullOrgs() {
-            if (!organizations) return;
-
-            try {
-                const fullOrgs = await Promise.all(
-                    organizations.map(async (org) => {
-                        const result =
-                            await authClient.organization.getFullOrganization({
-                                query: { organizationId: org.id },
-                            });
-                        return result.data as FullOrganization; // Type assertion here
-                    })
-                );
-                // Filter out any null values and set state
-                setFullOrganizations(
-                    fullOrgs.filter(
-                        (org): org is FullOrganization => org != null
-                    )
-                );
-            } catch (error) {
-                console.error("Error fetching full org data:", error);
-            }
-        }
-
-        fetchFullOrgs();
-    }, [organizations]);
     return (
         <SidebarMenuItem>
             <DropdownMenu>
@@ -105,16 +67,22 @@ export function OrgNav({ user, state }: Props) {
                     >
                         <Avatar className={cn("rounded-md w-4 h-4")}>
                             <AvatarImage
-                                src={activeOrg?.logo || ""}
+                                src={
+                                    activeOrg
+                                        ? activeOrg?.logo || ""
+                                        : user.image || ""
+                                }
                                 alt={activeOrg?.name || "Noterfine"}
                             />
                             <AvatarFallback className="rounded-md">
-                                <IconBuildingCommunity />
+                                {activeOrg
+                                    ? activeOrg.name?.charAt(0)
+                                    : user.name?.charAt(0) || "U"}
                             </AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">
-                                {activeOrg?.name || "Organization"}
+                                {activeOrg?.name || "Personal"}
                             </span>
                             {/* <span className="truncate text-xs">Pro</span> */}
                         </div>
@@ -135,7 +103,7 @@ export function OrgNav({ user, state }: Props) {
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="rounded-md">
-                                    CN
+                                    {user.name?.charAt(0)}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -150,24 +118,13 @@ export function OrgNav({ user, state }: Props) {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        {fullOrganizations.map((org) => (
+                        {organizations.map((org: FullOrganization) => (
                             <DropdownMenuItem
                                 key={org.id}
                                 onClick={async () => {
-                                    try {
-                                        await authClient.organization.setActive(
-                                            {
-                                                organizationId: org.id,
-                                            }
-                                        );
-                                        setActiveOrg(org);
-                                        router.push(`/admin/org/${org.id}`);
-                                    } catch (error) {
-                                        console.error(
-                                            "Error setting active organization:",
-                                            error
-                                        );
-                                    }
+                                    router.push(`/admin/org/${org.id}`);
+                                    await onOrganizationChange(org);
+                                    router.refresh();
                                 }}
                             >
                                 <img
@@ -181,22 +138,21 @@ export function OrgNav({ user, state }: Props) {
 
                         <DropdownMenuItem
                             onClick={async () => {
-                                try {
-                                    await authClient.organization.setActive({
-                                        organizationId: null,
-                                    });
-                                    setActiveOrg(null);
-                                    router.push(`/admin`);
-                                } catch (error) {
-                                    console.error(
-                                        "Error clearing active organization:",
-                                        error
-                                    );
-                                }
+                                await onOrganizationChange(null);
+                                router.refresh();
+                                router.push("/admin");
                             }}
                         >
-                            <IconHome className="h-4 w-4" />
-                            Home
+                            <Avatar className="h-4 w-4 rounded-md">
+                                <AvatarImage
+                                    src={user.image ?? ""}
+                                    alt={user.name}
+                                />
+                                <AvatarFallback className="rounded-md text-[0.5rem]">
+                                    {user.name?.charAt(0)}
+                                </AvatarFallback>
+                            </Avatar>
+                            Personal
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
