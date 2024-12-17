@@ -6,13 +6,14 @@ import { Label } from "../ui/label";
 import { Collection } from "@/types/user";
 import { organization } from "better-auth/plugins";
 import { IconEye, IconLockBolt, IconLockOpen2 } from "@tabler/icons-react";
+import { getActiveOrganization } from "@/hooks/client";
 
 interface Props {
     children?: React.ReactNode;
     collection?: Collection;
 }
 export function CollectionHeading({ children, collection }: Props) {
-    const { data: activeOrganization } = authClient.useActiveOrganization();
+    const activeOrganization = getActiveOrganization();
     return (
         <Card>
             <CardHeader>
