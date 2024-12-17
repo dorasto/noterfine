@@ -1,16 +1,15 @@
 "use client";
 
-import { authClient } from "@/app/lib/auth-client";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import { OrgMembers } from "./Members";
+import { getActiveOrganization } from "@/hooks/client";
 
 interface Props {
     children?: React.ReactNode;
 }
 export function OrgHeading({ children }: Props) {
-    const { data: activeOrganization } = authClient.useActiveOrganization();
-
+    const activeOrganization = getActiveOrganization();
     return (
         <Card>
             <CardHeader>

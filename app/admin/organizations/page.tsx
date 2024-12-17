@@ -1,18 +1,13 @@
-import Image from "next/image";
-import { headers } from "next/headers";
-import { auth } from "@/app/lib/auth";
 import { UserOrganizations } from "@/components/user/organizations";
 import { CreateOrg } from "@/components/user/CreateOrg";
 import { Separator } from "@/components/ui/separator";
-import { authClient } from "@/app/lib/auth-client";
-import { user } from "@/app/db/schema/auth-schema";
 import { Label } from "@/components/ui/label";
 import "dotenv/config";
+import { getSession } from "@/hooks/server";
 
 export default async function Home() {
-    const session = await auth.api.getSession({
-        headers: await headers(), // you need to pass the headers object.
-    });
+    const session = await getSession();
+
     return (
         <div className="flex flex-col gap-6">
             <UserOrganizations />

@@ -1,12 +1,9 @@
-import Image from "next/image";
-import { headers } from "next/headers";
-import { auth } from "@/app/lib/auth";
-import { OrgHeading } from "@/components/organization/Heading";
 import { CollectionHeading } from "@/components/collections/CollectionHeading";
 import { db } from "@/app/db";
 import * as schema from "@/app/db/schema/collections";
 import { eq } from "drizzle-orm";
 import type { Collection } from "@/types/user";
+import { getSession } from "@/hooks/server";
 
 interface PageProps {
     params: {
@@ -15,9 +12,7 @@ interface PageProps {
 }
 
 export default async function Home({ params }: PageProps) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+    const session = await getSession();
 
     const collectionData = await db
         .select()
