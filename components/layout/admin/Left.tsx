@@ -86,7 +86,17 @@ export function SidebarLeft({
 
     const [createCollectionopen, setCreateCollectionOpen] =
         React.useState(false);
-
+    const [openOrgs, setOpenOrgs] = React.useState<string[]>([]);
+    React.useEffect(() => {
+        if (pathname) {
+            const orgId = organizations.find((org) =>
+                pathname.includes(org.id)
+            )?.id;
+            if (orgId && !openOrgs.includes(orgId)) {
+                setOpenOrgs((prev) => [...prev, orgId]);
+            }
+        }
+    }, [pathname, organizations]);
     return (
         <Sidebar className="" variant="floating" collapsible="icon" {...props}>
             <CreateCollection
@@ -147,7 +157,7 @@ export function SidebarLeft({
                 </SidebarMenu>
             </SidebarHeader>
             {siteAdmin && pathname.includes("/admin/site-admin") ? (
-                <SidebarContent>
+                <SidebarContent className="select-none">
                     {SiteAdminItemsArray().map((group) => (
                         <SidebarGroup key={group.title}>
                             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
@@ -207,11 +217,18 @@ export function SidebarLeft({
                             </SidebarGroupAction>
                             {organizations?.map((org) => (
                                 <Collapsible
-                                    defaultOpen
-                                    // open={pathname.includes(org.id)}
-
+                                    open={openOrgs.includes(org.id)}
+                                    onOpenChange={(open) => {
+                                        setOpenOrgs((prev) =>
+                                            open
+                                                ? [...prev, org.id]
+                                                : prev.filter(
+                                                      (id) => id !== org.id
+                                                  )
+                                        );
+                                    }}
                                     key={org.id}
-                                    className="group/collapsible"
+                                    className="group/collapsible select-none"
                                 >
                                     <SidebarMenuItem>
                                         <SidebarMenuButton
@@ -244,13 +261,28 @@ export function SidebarLeft({
                                             </Avatar>
                                             {org.name}
                                         </SidebarMenuButton>
-
-                                        <SidebarMenuAction>
+                                        <div className="flex items-center gap-1 absolute top-2 right-2">
                                             <CollapsibleTrigger asChild>
-                                                <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
+                                                <Button
+                                                    variant={"sidebarActions"}
+                                                    size={"sidebarActions"}
+                                                >
+                                                    <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
+                                                </Button>
                                             </CollapsibleTrigger>
-                                        </SidebarMenuAction>
+                                            <Button
+                                                variant={"sidebarActions"}
+                                                size={"sidebarActions"}
+                                            >
+                                                <IconDotsVertical className="group-data-[state=closed]/collapsible:-rotate-90" />
+                                            </Button>
 
+                                            {/* <SidebarMenuAction>
+                                                <CollapsibleTrigger asChild>
+                                                    <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
+                                                </CollapsibleTrigger>
+                                            </SidebarMenuAction> */}
+                                        </div>
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
                                                 {allOrgCollections

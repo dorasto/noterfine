@@ -15,9 +15,10 @@ export function OrgHeading({ children }: Props) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-1">
                     <img
-                        src={activeOrganization?.logo ?? ""}
+                        // @ts-ignore
+                        src={activeOrganization?.logo}
                         alt={activeOrganization?.name}
-                        className="h-10 w-10 rounded-full"
+                        className="h-10 w-10"
                     />
                     <Label variant={"heading"}>
                         {activeOrganization?.name}
