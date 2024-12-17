@@ -21,7 +21,7 @@ export function CollectionHeading({ children, collection }: Props) {
                         // @ts-ignore
                         src={activeOrganization?.logo}
                         alt={activeOrganization?.name}
-                        className="h-10 w-10 rounded-full"
+                        className="h-10 w-10"
                     />
                     <Label variant={"heading"}>
                         {collection?.name || "Collection"}

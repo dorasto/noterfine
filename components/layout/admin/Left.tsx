@@ -232,7 +232,7 @@ export function SidebarLeft({
                                 >
                                     <SidebarMenuItem>
                                         <SidebarMenuButton
-                                            isActive={pathname.includes(org.id)}
+                                            isActive={pathname.endsWith(org.id)}
                                             onClick={async () => {
                                                 await onOrganizationChange(org);
                                                 router.refresh();
@@ -298,6 +298,9 @@ export function SidebarLeft({
                                                                 }
                                                             >
                                                                 <SidebarMenuSubButton
+                                                                    isActive={pathname.includes(
+                                                                        collection.id
+                                                                    )}
                                                                     onClick={async () => {
                                                                         await onOrganizationChange(
                                                                             org
