@@ -57,6 +57,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 
 interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
     user: User;
@@ -87,7 +88,7 @@ export function SidebarLeft({
         React.useState(false);
 
     return (
-        <Sidebar className="" variant="inset" collapsible="icon" {...props}>
+        <Sidebar className="" variant="floating" collapsible="icon" {...props}>
             <CreateCollection
                 user={user}
                 organization={activeOrg}
@@ -243,11 +244,13 @@ export function SidebarLeft({
                                             </Avatar>
                                             {org.name}
                                         </SidebarMenuButton>
+
                                         <SidebarMenuAction>
                                             <CollapsibleTrigger asChild>
                                                 <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
                                             </CollapsibleTrigger>
                                         </SidebarMenuAction>
+
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
                                                 {allOrgCollections
@@ -263,11 +266,15 @@ export function SidebarLeft({
                                                                 }
                                                             >
                                                                 <SidebarMenuSubButton
-                                                                    onClick={() =>
+                                                                    onClick={async () => {
+                                                                        await onOrganizationChange(
+                                                                            org
+                                                                        );
+                                                                        router.refresh();
                                                                         router.push(
-                                                                            `/admin/org/${org.id}/collection/${collection.id}`
-                                                                        )
-                                                                    }
+                                                                            `/admin/org/${org.id}/collections/${collection.id}`
+                                                                        );
+                                                                    }}
                                                                 >
                                                                     {
                                                                         collection.name
@@ -276,57 +283,12 @@ export function SidebarLeft({
                                                             </SidebarMenuSubItem>
                                                         )
                                                     )}
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton />
-                                                </SidebarMenuSubItem>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton />
-                                                </SidebarMenuSubItem>
                                             </SidebarMenuSub>
                                         </CollapsibleContent>
                                     </SidebarMenuItem>
                                 </Collapsible>
                             ))}
                         </SidebarGroup>
-                        <Collapsible defaultOpen className="group/collapsible">
-                            <SidebarGroup>
-                                <SidebarGroupLabel>
-                                    <IconNews />
-                                    Collections
-                                </SidebarGroupLabel>
-                                <SidebarGroupAction
-                                    onClick={() =>
-                                        setCreateCollectionOpen(true)
-                                    }
-                                >
-                                    <IconPlus />
-                                </SidebarGroupAction>
-                                {collections?.map((collection) => (
-                                    <SidebarMenuItem key={collection.id}>
-                                        <SidebarMenuButton
-                                            isActive={pathname.includes(
-                                                collection.id
-                                            )}
-                                            onClick={() =>
-                                                router.push(
-                                                    `/admin/org/${activeOrg?.id}/collections/${collection.id}`
-                                                )
-                                            }
-                                        >
-                                            {collection.name}
-                                        </SidebarMenuButton>
-                                        <SidebarMenuSub>
-                                            <SidebarMenuSubItem>
-                                                <SidebarMenuSubButton />
-                                            </SidebarMenuSubItem>
-                                            <SidebarMenuSubItem>
-                                                <SidebarMenuSubButton />
-                                            </SidebarMenuSubItem>
-                                        </SidebarMenuSub>
-                                    </SidebarMenuItem>
-                                ))}
-                            </SidebarGroup>
-                        </Collapsible>
                     </>
                 </SidebarContent>
             )}
