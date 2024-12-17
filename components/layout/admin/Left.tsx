@@ -76,6 +76,7 @@ export function SidebarLeft({
     activeOrg,
     collections,
     onOrganizationChange,
+    allOrgCollections,
     ...props
 }: SidebarLeftProps) {
     const pathname = usePathname();
@@ -249,25 +250,32 @@ export function SidebarLeft({
                                         </SidebarMenuAction>
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
-                                                {collections.map(
-                                                    (collection) => (
-                                                        <SidebarMenuSubItem
-                                                            key={collection.id}
-                                                        >
-                                                            <SidebarMenuSubButton
-                                                                onClick={() =>
-                                                                    router.push(
-                                                                        `/admin/org/${org.id}/collection/${collection.id}`
-                                                                    )
+                                                {allOrgCollections
+                                                    .find(
+                                                        (e) =>
+                                                            e.orgId === org.id
+                                                    )
+                                                    ?.collections?.map(
+                                                        (collection) => (
+                                                            <SidebarMenuSubItem
+                                                                key={
+                                                                    collection.id
                                                                 }
                                                             >
-                                                                {
-                                                                    collection.name
-                                                                }
-                                                            </SidebarMenuSubButton>
-                                                        </SidebarMenuSubItem>
-                                                    )
-                                                )}
+                                                                <SidebarMenuSubButton
+                                                                    onClick={() =>
+                                                                        router.push(
+                                                                            `/admin/org/${org.id}/collection/${collection.id}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        collection.name
+                                                                    }
+                                                                </SidebarMenuSubButton>
+                                                            </SidebarMenuSubItem>
+                                                        )
+                                                    )}
                                                 <SidebarMenuSubItem>
                                                     <SidebarMenuSubButton />
                                                 </SidebarMenuSubItem>
