@@ -36,6 +36,9 @@ import {
 } from "./LeftItems";
 import {
     IconArrowBack,
+    IconBuildingCommunity,
+    IconChevronCompactDown,
+    IconChevronDown,
     IconDotsVertical,
     IconLayoutSidebarLeftCollapse,
     IconLayoutSidebarLeftExpand,
@@ -45,7 +48,7 @@ import {
     IconShieldFilled,
 } from "@tabler/icons-react";
 import { OrgNav } from "./OrgNav";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import CreateCollection from "@/components/collections/CreateCollection";
 import { authClient } from "@/app/lib/auth-client";
@@ -188,6 +191,80 @@ export function SidebarLeft({
                                 </SidebarMenu>
                             </SidebarGroup>
                         ))}
+                        <Collapsible defaultOpen className="group/collapsible">
+                            <SidebarGroup>
+                                <SidebarGroupLabel>
+                                    <IconBuildingCommunity />
+                                    Organizations
+                                </SidebarGroupLabel>
+                                <SidebarGroupAction
+                                    onClick={() =>
+                                        setCreateCollectionOpen(true)
+                                    }
+                                >
+                                    <IconPlus />
+                                </SidebarGroupAction>
+                                {organizations?.map((org) => (
+                                    <Collapsible
+                                        defaultOpen
+                                        key={org.id}
+                                        className="group/collapsible"
+                                    >
+                                        <SidebarMenuItem>
+                                            <SidebarMenuButton
+                                                isActive={pathname.includes(
+                                                    org.id
+                                                )}
+                                                onClick={async () => {
+                                                    await onOrganizationChange(
+                                                        org
+                                                    );
+                                                    router.refresh();
+                                                    router.push(
+                                                        `/admin/org/${org.id}`
+                                                    );
+                                                }}
+                                            >
+                                                <Avatar
+                                                    className={cn(
+                                                        "rounded-md w-4 h-4"
+                                                    )}
+                                                >
+                                                    {org.logo && (
+                                                        <AvatarImage
+                                                            src={org.logo}
+                                                            alt={
+                                                                org?.name ||
+                                                                "Noterfine"
+                                                            }
+                                                        />
+                                                    )}
+                                                    <AvatarFallback className="rounded-md">
+                                                        {org.name?.charAt(0)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                {org.name}
+                                            </SidebarMenuButton>
+                                            <CollapsibleTrigger asChild>
+                                                <SidebarMenuAction>
+                                                    <IconChevronDown className="group-data-[state=open]/collapsible:rotate-90" />
+                                                </SidebarMenuAction>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent>
+                                                <SidebarMenuSub>
+                                                    <SidebarMenuSubItem>
+                                                        <SidebarMenuSubButton />
+                                                    </SidebarMenuSubItem>
+                                                    <SidebarMenuSubItem>
+                                                        <SidebarMenuSubButton />
+                                                    </SidebarMenuSubItem>
+                                                </SidebarMenuSub>
+                                            </CollapsibleContent>
+                                        </SidebarMenuItem>
+                                    </Collapsible>
+                                ))}
+                            </SidebarGroup>
+                        </Collapsible>
                         <Collapsible defaultOpen className="group/collapsible">
                             <SidebarGroup>
                                 <SidebarGroupLabel>
