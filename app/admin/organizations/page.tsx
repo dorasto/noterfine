@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import "dotenv/config";
 import { getSession } from "@/hooks/server";
+import PageWrapper from "@/components/layout/PageWrapper";
 
 export default async function Home() {
     const session = await getSession();
@@ -17,12 +18,12 @@ export default async function Home() {
             process.env.NOTERFINE_LICENSE_KEY !== undefined ? (
                 <CreateOrg />
             ) : (
-                <div className="relative">
+                <PageWrapper>
                     <div className="bg-background/10 absolute inset-0 z-10 flex items-center justify-center backdrop-blur-sm rounded-xl border">
                         <Label variant={"heading"}>Upgrade</Label>
                     </div>
                     <CreateOrg disabled />
-                </div>
+                </PageWrapper>
             )}
         </div>
     );

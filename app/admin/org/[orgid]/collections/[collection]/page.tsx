@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import type { Collection } from "@/types/user";
 import { getSession } from "@/hooks/server";
 import { redirect } from "next/navigation";
+import PageWrapper from "@/components/layout/PageWrapper";
 
 interface PageProps {
     params: {
@@ -34,9 +35,9 @@ export default async function Home({ params }: PageProps) {
         .where(eq(schema.collectionItem.collectionId, collection));
 
     return (
-        <div>
+        <PageWrapper>
             <CollectionHeading collection={collectionData[0] as Collection} />
             <CollectionItemsList items={collectionItems} />
-        </div>
+        </PageWrapper>
     );
 }

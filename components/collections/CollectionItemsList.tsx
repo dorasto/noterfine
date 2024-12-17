@@ -16,7 +16,9 @@ export function CollectionItemsList({ items = [], onCreateNew }: Props) {
         <div className="mt-4">
             <div className="flex items-center justify-between mb-4">
                 <Label variant={"heading"}>Items</Label>
-                <Button onClick={onCreateNew}>Create</Button>
+                <a href={`/admin/org/editor/new`}>
+                    <Button onClick={onCreateNew}>Create</Button>
+                </a>
             </div>
 
             <div className="flex flex-wrap gap-4">

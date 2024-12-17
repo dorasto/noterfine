@@ -76,13 +76,12 @@ export default async function DashboardLayout({
                     onOrganizationChange={updateActiveOrganization}
                 />
             </Suspense>
-            <SidebarInset>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <div className="flex flex-1 flex-col gap-4 p-4">
-                        {children}
-                    </div>
-                </Suspense>
-            </SidebarInset>
+
+            <Suspense fallback={<div>Loading...</div>}>
+                {/* <div className="flex flex-1 flex-col gap-4 p-4"> */}
+                {children}
+                {/* </div> */}
+            </Suspense>
         </SidebarProvider>
     );
 }

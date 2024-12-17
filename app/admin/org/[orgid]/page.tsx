@@ -3,6 +3,7 @@ import { auth } from "@/app/lib/auth";
 import { OrgHeading } from "@/components/organization/Heading";
 import { redirect } from "next/navigation";
 import { getSession } from "@/hooks/server";
+import PageWrapper from "@/components/layout/PageWrapper";
 
 export default async function Home({ params }: { params: { orgid: string } }) {
     //await needed for next 15 not sure why
@@ -20,8 +21,8 @@ export default async function Home({ params }: { params: { orgid: string } }) {
     });
 
     return (
-        <div>
+        <PageWrapper>
             <OrgHeading />
-        </div>
+        </PageWrapper>
     );
 }
