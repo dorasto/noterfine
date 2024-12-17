@@ -5,7 +5,16 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { Sidebar, SidebarProvider } from "../ui/sidebar";
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarInput,
+    SidebarProvider,
+} from "../ui/sidebar";
+import PageWrapper from "../layout/PageWrapper";
+import { Editor } from "@/components/editor/DynamicEditor";
 
 interface Props {
     collectionId: string;
@@ -42,30 +51,30 @@ export function CollectionEditor({ collectionId, item, userId }: Props) {
     };
 
     return (
-        <SidebarProvider>
-            <Card>
-                <CardHeader>
-                    <CardTitle>{item ? "Edit Item" : "New Item"}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+        <SidebarProvider
+            style={{
+                "--sidebar-width": "20vw",
+                "--sidebar-width-mobile": "50vw",
+            }}
+        >
+            <PageWrapper>
+                <Editor />
+            </PageWrapper>
+            <Sidebar side="right" variant="floating">
+                <SidebarContent>
+                    <SidebarGroup>
                         <div>
-                            <Label htmlFor="title">Title</Label>
-                            <Input
+                            <Label variant={"small"}>Title</Label>
+                            <SidebarInput
                                 id="title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
                             />
                         </div>
-
-                        <Button type="submit">
-                            {item ? "Save Changes" : "Create Item"}
-                        </Button>
-                    </form>
-                </CardContent>
-            </Card>
-            <Sidebar side="right" variant="floating"></Sidebar>
+                    </SidebarGroup>
+                </SidebarContent>
+            </Sidebar>
         </SidebarProvider>
     );
 }

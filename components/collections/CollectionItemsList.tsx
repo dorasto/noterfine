@@ -7,16 +7,25 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 
 interface Props {
+    orgId: string;
+    collectionId: string;
     items?: CollectionItem[];
     onCreateNew?: () => void;
 }
 
-export function CollectionItemsList({ items = [], onCreateNew }: Props) {
+export function CollectionItemsList({
+    items = [],
+    onCreateNew,
+    orgId,
+    collectionId,
+}: Props) {
     return (
         <div className="mt-4">
             <div className="flex items-center justify-between mb-4">
                 <Label variant={"heading"}>Items</Label>
-                <a href={`/admin/org/editor/new`}>
+                <a
+                    href={`/admin/org/${orgId}/collections/${collectionId}/editor/new`}
+                >
                     <Button onClick={onCreateNew}>Create</Button>
                 </a>
             </div>

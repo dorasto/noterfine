@@ -37,7 +37,11 @@ export default async function Home({ params }: PageProps) {
     return (
         <PageWrapper>
             <CollectionHeading collection={collectionData[0] as Collection} />
-            <CollectionItemsList items={collectionItems} />
+            <CollectionItemsList
+                items={collectionItems}
+                orgId={orgid}
+                collectionId={collection}
+            />
         </PageWrapper>
     );
 }
