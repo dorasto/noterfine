@@ -17,6 +17,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
+    SidebarMenuSubAction,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
     SidebarRail,
@@ -53,7 +54,9 @@ import {
     IconNews,
     IconPencil,
     IconPlus,
+    IconSettings,
     IconShieldFilled,
+    IconTrash,
 } from "@tabler/icons-react";
 import { OrgNav } from "./OrgNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,12 +64,24 @@ import { cn } from "@/lib/utils";
 import CreateCollection from "@/components/collections/CreateCollection";
 import { authClient } from "@/app/lib/auth-client";
 import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer";
+
+import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { OrgDrawerPopover } from "./OrgDrawerPopover";
 
 interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
     user: User;
@@ -91,7 +106,8 @@ export function SidebarLeft({
 }: SidebarLeftProps) {
     const pathname = usePathname();
     const router = useRouter();
-    const { state, toggleSidebar } = useSidebar();
+    const { state, toggleSidebar, isMobile } = useSidebar();
+    const [openOrgDrawer, setOpenOrgDrawer] = React.useState(false);
 
     const [createCollectionopen, setCreateCollectionOpen] =
         React.useState(false);
@@ -106,6 +122,7 @@ export function SidebarLeft({
             }
         }
     }, [pathname, organizations]);
+
     return (
         <Sidebar className="" variant="floating" collapsible="icon" {...props}>
             <CreateCollection
@@ -156,13 +173,15 @@ export function SidebarLeft({
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
-                    <OrgNav
-                        user={user}
-                        state={state}
-                        organizations={organizations}
-                        activeOrg={activeOrg}
-                        onOrganizationChange={onOrganizationChange}
-                    />
+                    {state === "expanded" && (
+                        <OrgNav
+                            user={user}
+                            state={state}
+                            organizations={organizations}
+                            activeOrg={activeOrg}
+                            onOrganizationChange={onOrganizationChange}
+                        />
+                    )}
                 </SidebarMenu>
             </SidebarHeader>
             {siteAdmin && pathname.includes("/admin/site-admin") ? (
@@ -243,11 +262,25 @@ export function SidebarLeft({
                                         <SidebarMenuButton
                                             isActive={pathname.endsWith(org.id)}
                                             onClick={async () => {
-                                                await onOrganizationChange(org);
-                                                router.refresh();
-                                                router.push(
-                                                    `/admin/org/${org.id}`
-                                                );
+                                                if (state === "expanded") {
+                                                    await onOrganizationChange(
+                                                        org
+                                                    );
+                                                    router.refresh();
+                                                    router.push(
+                                                        `/admin/org/${org.id}`
+                                                    );
+                                                } else {
+                                                    console.log(
+                                                        "Current state:",
+                                                        openOrgDrawer
+                                                    );
+                                                    setOpenOrgDrawer(true);
+                                                    console.log(
+                                                        "After setState:",
+                                                        openOrgDrawer
+                                                    );
+                                                }
                                             }}
                                         >
                                             <Avatar
@@ -270,7 +303,25 @@ export function SidebarLeft({
                                             </Avatar>
                                             {org.name}
                                         </SidebarMenuButton>
-                                        <div className="flex items-center gap-1 absolute top-2 right-2">
+                                        <OrgDrawerPopover
+                                            org={org}
+                                            open={openOrgDrawer}
+                                            setOpen={setOpenOrgDrawer}
+                                            isMobile={isMobile}
+                                            collections={
+                                                allOrgCollections.find(
+                                                    (e) => e.orgId === org.id
+                                                )?.collections
+                                            }
+                                        />
+                                        <div
+                                            className={cn(
+                                                "flex items-center gap-1 absolute top-2 right-2",
+                                                state === "expanded"
+                                                    ? ""
+                                                    : "hidden"
+                                            )}
+                                        >
                                             <CollapsibleTrigger asChild>
                                                 <Button
                                                     variant={"sidebarActions"}
@@ -304,7 +355,7 @@ export function SidebarLeft({
                                                     <DropdownMenuItem>
                                                         Team
                                                     </DropdownMenuItem>
-                                                    <Separator />
+                                                    <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         onClick={() =>
                                                             setCreateCollectionOpen(
@@ -336,6 +387,7 @@ export function SidebarLeft({
                                                                 key={
                                                                     collection.id
                                                                 }
+                                                                className=""
                                                             >
                                                                 <SidebarMenuSubButton
                                                                     isActive={pathname.includes(
@@ -350,11 +402,54 @@ export function SidebarLeft({
                                                                             `/admin/org/${org.id}/collections/${collection.id}`
                                                                         );
                                                                     }}
+                                                                    className="gap-2"
                                                                 >
-                                                                    {
-                                                                        collection.name
-                                                                    }
+                                                                    <div className="truncate">
+                                                                        {
+                                                                            collection.name
+                                                                        }
+                                                                    </div>
                                                                 </SidebarMenuSubButton>
+                                                                {/* <SidebarMenuAction className="bg-transparent hover:bg-transparent right-3">
+                                                                    <DropdownMenu>
+                                                                        <DropdownMenuTrigger
+                                                                            asChild
+                                                                        >
+                                                                            <Button
+                                                                                variant={
+                                                                                    "sidebarActions"
+                                                                                }
+                                                                                size={
+                                                                                    "sidebarActions"
+                                                                                }
+                                                                            >
+                                                                                <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
+                                                                            </Button>
+                                                                        </DropdownMenuTrigger>
+                                                                        <DropdownMenuContent side="right">
+                                                                            <DropdownMenuLabel>
+                                                                                {
+                                                                                    collection.name
+                                                                                }
+                                                                            </DropdownMenuLabel>
+                                                                            <DropdownMenuSeparator />
+                                                                            <DropdownMenuItem>
+                                                                                <IconPlus />
+                                                                                Add
+                                                                                content
+                                                                            </DropdownMenuItem>
+                                                                            <DropdownMenuItem>
+                                                                                <IconSettings />
+                                                                                Settings
+                                                                            </DropdownMenuItem>
+                                                                            <DropdownMenuSeparator />
+                                                                            <DropdownMenuItem className="bg-destructive/50">
+                                                                                <IconTrash />
+                                                                                Delete
+                                                                            </DropdownMenuItem>
+                                                                        </DropdownMenuContent>
+                                                                    </DropdownMenu>
+                                                                </SidebarMenuAction> */}
                                                             </SidebarMenuSubItem>
                                                         )
                                                     )}
