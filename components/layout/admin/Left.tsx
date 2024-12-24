@@ -363,7 +363,7 @@ export function SidebarLeft({
                                                                 key={
                                                                     collection.id
                                                                 }
-                                                                className=""
+                                                                className="group/subitem"
                                                             >
                                                                 <SidebarMenuSubButton
                                                                     isActive={pathname.includes(
@@ -386,21 +386,12 @@ export function SidebarLeft({
                                                                         }
                                                                     </div>
                                                                 </SidebarMenuSubButton>
-                                                                {/* <SidebarMenuAction className="bg-transparent hover:bg-transparent right-3">
+                                                                <SidebarMenuAction className="invisible group-hover/subitem:visible right-4">
                                                                     <DropdownMenu>
                                                                         <DropdownMenuTrigger
                                                                             asChild
                                                                         >
-                                                                            <Button
-                                                                                variant={
-                                                                                    "sidebarActions"
-                                                                                }
-                                                                                size={
-                                                                                    "sidebarActions"
-                                                                                }
-                                                                            >
-                                                                                <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
-                                                                            </Button>
+                                                                            <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
                                                                         </DropdownMenuTrigger>
                                                                         <DropdownMenuContent side="right">
                                                                             <DropdownMenuLabel>
@@ -425,7 +416,7 @@ export function SidebarLeft({
                                                                             </DropdownMenuItem>
                                                                         </DropdownMenuContent>
                                                                     </DropdownMenu>
-                                                                </SidebarMenuAction> */}
+                                                                </SidebarMenuAction>
                                                             </SidebarMenuSubItem>
                                                         )
                                                     )}
