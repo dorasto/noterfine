@@ -82,6 +82,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { OrgDrawerPopover } from "./OrgDrawerPopover";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { CreateOrg } from "@/components/user/CreateOrg";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
     user: User;
@@ -239,9 +247,22 @@ export function SidebarLeft({
                                 Organizations
                             </SidebarGroupLabel>
                             <SidebarGroupAction
-                                onClick={() => setCreateCollectionOpen(true)}
+                            // onClick={() => setCreateCollectionOpen(true)}
                             >
-                                <IconPlus />
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <IconPlus />
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader className="sr-only">
+                                            <DialogTitle>
+                                                Create organization
+                                            </DialogTitle>
+                                        </DialogHeader>
+                                        <CreateOrg />
+                                    </DialogContent>
+                                </Dialog>
+                                {/* <IconPlus /> */}
                             </SidebarGroupAction>
                             {organizations?.map((org) => (
                                 <Collapsible
