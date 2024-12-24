@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Tooltip,
@@ -18,6 +18,12 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+    IconBuildingCommunity,
+    IconBuildingWarehouse,
+    IconHome,
+    IconLayoutSidebarLeftExpand,
+} from "@tabler/icons-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -203,27 +209,48 @@ const Sidebar = React.forwardRef<
 
         if (isMobile) {
             return (
-                <Sheet
-                    open={openMobile}
-                    onOpenChange={setOpenMobile}
-                    {...props}
+                <div
+                    ref={ref}
+                    className="fixed bottom-4 left-4 right-4 z-50 flex h-14 flex-row items-center rounded-lg border bg-sidebar p-2 shadow-lg"
+                    data-variant="floating"
+                    data-mobile="true"
                 >
-                    <SheetContent
-                        data-sidebar="sidebar"
-                        data-mobile="true"
-                        className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-                        style={
-                            {
-                                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                            } as React.CSSProperties
-                        }
-                        side={side}
-                    >
-                        <div className="flex h-full w-full flex-col">
-                            {children}
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                    <div className="flex w-full flex-row items-center gap-3 [&_[data-sidebar=menu-button]]:w-8 [&_[data-sidebar=menu-button]]:p-2 [&_[data-sidebar=menu-button]>span]:hidden [&_[data-sidebar=menu-button]>svg]:block [&_[data-sidebar=menu-badge]]:hidden [&_[data-sidebar=menu-action]]:hidden [&_[data-sidebar=menu-sub]]:hidden [&_[data-sidebar=group-label]]:hidden">
+                        <Sheet
+                            open={openMobile}
+                            onOpenChange={setOpenMobile}
+                            {...props}
+                        >
+                            <SheetTrigger asChild>
+                                <Button variant={"outline"} size={"icon"}>
+                                    <IconLayoutSidebarLeftExpand />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent
+                                data-sidebar="sidebar"
+                                data-mobile="true"
+                                className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+                                style={
+                                    {
+                                        "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+                                    } as React.CSSProperties
+                                }
+                                side={side}
+                            >
+                                <div className="flex h-full w-full flex-col">
+                                    {children}
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                        <Button variant={"outline"} size={"icon"}>
+                            <IconHome />
+                        </Button>
+                        <Button variant={"outline"} size={"icon"}>
+                            <IconBuildingCommunity />
+                        </Button>
+                        {/* {children} */}
+                    </div>
+                </div>
             );
         }
 
