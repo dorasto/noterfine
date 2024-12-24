@@ -313,6 +313,9 @@ export function SidebarLeft({
                                                     (e) => e.orgId === org.id
                                                 )?.collections
                                             }
+                                            onOrganizationChange={
+                                                onOrganizationChange
+                                            }
                                         />
                                         <div
                                             className={cn(
@@ -330,43 +333,16 @@ export function SidebarLeft({
                                                     <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
                                                 </Button>
                                             </CollapsibleTrigger>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant={
-                                                            "sidebarActions"
-                                                        }
-                                                        size={"sidebarActions"}
-                                                    >
-                                                        <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent side="right">
-                                                    <DropdownMenuLabel>
-                                                        {org.name}
-                                                    </DropdownMenuLabel>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem>
-                                                        Profile
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        Billing
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        Team
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            setCreateCollectionOpen(
-                                                                true
-                                                            )
-                                                        }
-                                                    >
-                                                        Create Collection
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+
+                                            <Button
+                                                variant={"sidebarActions"}
+                                                size={"sidebarActions"}
+                                                onClick={async () => {
+                                                    setOpenOrgDrawer(true);
+                                                }}
+                                            >
+                                                <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
+                                            </Button>
 
                                             {/* <SidebarMenuAction>
                                                 <CollapsibleTrigger asChild>

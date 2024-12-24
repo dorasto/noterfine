@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Collection, FullOrganization } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 import {
     Sheet,
     SheetContent,
@@ -47,6 +48,7 @@ import {
     IconArrowRight,
     IconCreditCard,
     IconExternalLink,
+    IconHome,
     IconStack2,
     IconUsers,
 } from "@tabler/icons-react";
@@ -56,6 +58,7 @@ interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
     collections?: Collection[];
+    onOrganizationChange: (org: FullOrganization | null) => void;
 }
 
 export function OrgDrawerPopover({
@@ -64,8 +67,10 @@ export function OrgDrawerPopover({
     open,
     setOpen,
     collections,
+    onOrganizationChange,
 }: Props) {
     const isDesktop = isMobile === false;
+    const router = useRouter();
 
     if (isDesktop) {
         return (
@@ -77,7 +82,6 @@ export function OrgDrawerPopover({
                     side="right"
                     align="center"
                     sideOffset={50}
-                    alignOffset={-10}
                 >
                     <DropdownMenuLabel className="flex items-center gap-1">
                         <Avatar className={cn("rounded-md w-4 h-4")}>
@@ -95,17 +99,32 @@ export function OrgDrawerPopover({
                     </DropdownMenuLabel>
 
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <IconExternalLink /> Profile
-                    </DropdownMenuItem>
                     <DropdownMenuSub>
+                        <DropdownMenuItem
+                            onClick={async () => {
+                                await onOrganizationChange(org);
+                                router.refresh();
+                                router.push(`/admin/org/${org.id}`);
+                            }}
+                        >
+                            <IconHome /> Dashboard
+                        </DropdownMenuItem>
                         <DropdownMenuSubTrigger>
                             <IconStack2 /> Collections
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
                             <DropdownMenuSubContent>
                                 {collections?.map((collection) => (
-                                    <DropdownMenuItem key={collection.id}>
+                                    <DropdownMenuItem
+                                        key={collection.id}
+                                        onClick={async () => {
+                                            await onOrganizationChange(org);
+                                            router.refresh();
+                                            router.push(
+                                                `/admin/org/${org.id}/collections/${collection.id}`
+                                            );
+                                        }}
+                                    >
                                         {collection.name}
                                         <IconArrowRight className="ml-auto" />
                                     </DropdownMenuItem>
