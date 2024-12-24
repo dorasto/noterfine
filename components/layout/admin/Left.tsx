@@ -24,6 +24,14 @@ import {
     SidebarTrigger,
     useSidebar,
 } from "@/components/ui/sidebar";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { usePathname, useRouter } from "next/navigation";
 import { UserNav } from "./UserNav";
@@ -58,6 +66,7 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface SidebarLeftProps extends React.ComponentProps<typeof Sidebar> {
     user: User;
@@ -270,12 +279,43 @@ export function SidebarLeft({
                                                     <IconChevronDown className="group-data-[state=closed]/collapsible:-rotate-90" />
                                                 </Button>
                                             </CollapsibleTrigger>
-                                            <Button
-                                                variant={"sidebarActions"}
-                                                size={"sidebarActions"}
-                                            >
-                                                <IconDotsVertical className="group-data-[state=closed]/collapsible:-rotate-90" />
-                                            </Button>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant={
+                                                            "sidebarActions"
+                                                        }
+                                                        size={"sidebarActions"}
+                                                    >
+                                                        <IconDotsVertical className="group-data-[state=closed]/collapsible:" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent side="right">
+                                                    <DropdownMenuLabel>
+                                                        {org.name}
+                                                    </DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem>
+                                                        Profile
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        Billing
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        Team
+                                                    </DropdownMenuItem>
+                                                    <Separator />
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            setCreateCollectionOpen(
+                                                                true
+                                                            )
+                                                        }
+                                                    >
+                                                        Create Collection
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
 
                                             {/* <SidebarMenuAction>
                                                 <CollapsibleTrigger asChild>

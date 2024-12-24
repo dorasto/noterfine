@@ -28,10 +28,7 @@ export function OrgMembers({ children }: Props) {
                     </Avatar>
                     <div className="w-1/4 flex flex-col">
                         <div className="truncate">
-                            <Label variant={"bold"}>
-                                {member.user.name}daosipfj saodifj asopdijf
-                                opasijdf opaisjdop iajsodp ifjasopdij
-                            </Label>
+                            <Label variant={"bold"}>{member.user.name}</Label>
                         </div>
                         <div className="truncate">
                             <Label variant={"small"}>{member.user.email}</Label>
