@@ -3,13 +3,14 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "concurrently \"infisical run -- pnpm next dev\" \"infisical run -- pnpm drizzle-kit studio\"",
-        "drizzle": "infisical run -- pnpm drizzle-kit studio",
+        "dev": "concurrently \"pnpm next dev\" \"pnpm drizzle-kit studio\"",
+        "infisical:dev": "concurrently \"infisical run -- pnpm next dev\" \"infisical run -- pnpm drizzle-kit studio\"",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "db:auth-generate": "npx @better-auth/cli generate --output ./app/db/schema/auth-schema.ts",
-        "db:push": "infisical run -- npx drizzle-kit push"
+        "db:push": "npx drizzle-kit push",
+        "infisical:db:push": "infisical run -- npx drizzle-kit push"
     },
     "dependencies": {
         "@better-fetch/fetch": "^1.1.12",
