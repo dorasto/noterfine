@@ -69,12 +69,12 @@ export function UserOrganizations() {
                                 className="w-12 h-12 rounded-md"
                             />
                         )}
-                        <div className="w-1/12">
+                        <div className="w-4/12">
                             <div className="truncate">
                                 <Label variant={"heading"}>{org.name}</Label>
                             </div>
                         </div>
-                        <div className="w-2/12">
+                        <div className="w-4/12">
                             <div className="truncate">
                                 <Label variant={"bold"}>
                                     {org.slug}.noterfine.app
