@@ -1,3 +1,9 @@
+# Dormant notice
+This codebase is dormant and merely left for reference. We are rebuilding Noterfine from the ground up, changing it's stack and underlying codebase. This notice will be removed once published.
+
+<details>
+<summary>Legacy README</summary>
+<br>
 Noterfine is a project that aims to help manage notes and tasks and turn them into websites that can be either shared with the world, or for internal use locked behind an authentication wall. It is currently in development and is not yet ready for use.
 
 There will be a cloud hosted version of the project, as well as a self hosted version all provided from the one codebase.
@@ -22,3 +28,5 @@ Tech Stack:
 -   Open your browser to http://localhost:3000
 -   Drizzle will run at the same time, and available on http://local.drizzle.studio
 -   You will need to run `pnpm db:push` to push the schema to the database.
+
+</details>
